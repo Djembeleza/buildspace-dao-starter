@@ -129,6 +129,7 @@ button {
   text-transform: uppercase;
   border-radius: 3rem;
   font-size: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
 button:hover {
