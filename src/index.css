@@ -4,13 +4,17 @@ body {
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #7700ee;
-  color: #fff;
+  background-color: #6c2424;
+  color: #fbe6e5;
   overflow-x: hidden;
 }
 #root {
   min-height: 100vh;
   display: flex;
+  --main-color: #080404;
+  --sec-color: #d61413;
+  --tert-color: #fbe6e5;
+  --fourth-color: #6c2424;
 }
 
 h1 {
@@ -39,7 +43,7 @@ h1 {
   margin: auto;
   padding: 1rem;
   border-radius: 1rem;
-  background-color: #f00;
+  background-color: #d61413;
 }
 
 .landing,
@@ -107,17 +111,17 @@ h1 {
 }
 
 .card {
-  background-color: #fff;
+  background-color: #fbe6e5;
   padding: 1rem;
   border-radius: 1rem;
-  color: #000;
+  color: #080404;
   box-shadow: 3.1px 6.2px 6.2px hsl(0deg 0% 0% / 0.4);
 }
 
 button {
   cursor: pointer;
-  background-color: #000;
-  color: #fff;
+  background-color: #080404;
+  color: #fbe6e5;
   border: none;
   font-weight: bold;
   font-family: inherit;

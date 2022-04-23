@@ -22,66 +22,68 @@ const App = () => {
 
   // A fancy function to shorten someones wallet address, no need to show the whole thing.
   const shortenAddress = (str) => {
-    return str.substring(0,6) + "..." + str.substring(str.length - 4);
+    return str.substring(0, 6) + "..." + str.substring(str.length - 4);
   };
 
   // This useEffect grabs all the addresses of our members holding our NFT.
 
-// This useEffect grabs all the addresses of our members holding our NFT.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  // Just like we did in the 7-airdrop-token.js file! Grab the users who hold our NFT
-  // with tokenId 0.
-  const getAllAddresses = async () => {
-    try {
-      const memberAddresses = await editionDrop.history.getAllClaimerAddresses(0);
-      setMemberAddresses(memberAddresses);
-      console.log("🚀 Members addresses", memberAddresses);
-    } catch (error) {
-      console.error("failed to get member list", error);
+  // This useEffect grabs all the addresses of our members holding our NFT.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
     }
 
-  };
-  getAllAddresses();
-}, [hasClaimedNFT, editionDrop.history]);
+    // Just like we did in the 7-airdrop-token.js file! Grab the users who hold our NFT
+    // with tokenId 0.
+    const getAllAddresses = async () => {
+      try {
+        const memberAddresses = await editionDrop.history.getAllClaimerAddresses(0);
+        setMemberAddresses(memberAddresses);
+        console.log("🚀 Members addresses", memberAddresses);
+      } catch (error) {
+        console.error("failed to get member list", error);
+      }
 
-// This useEffect grabs the # of token each member holds
+    };
+    getAllAddresses();
+  }, [hasClaimedNFT, editionDrop.history]);
 
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
+  // This useEffect grabs the # of token each member holds
 
-  const getAllBalances = async () => {
-    try {
-      const amounts = await token.getAllHolderBalances();
-      setMemberTokenAmounts(amounts);
-      console.log("👜 Amounts", amounts);
-    } catch (error) {
-      console.error("failed to get member balances", error);
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
     }
-  }
 
-  getAllBalances();
-}, [hasClaimedNFT, token.history]);
-
-// Now, we combine the memberAddresses and memberTokenAmounts into a single array
-const memberList = useMemo(() => {
-  return memberAddresses.map((address) => {
-    // We're checking if we are finding the address in the memberTokenAmounts array
-    // If we are, we'll return the amount of token the member has.
-    // Otherwise, we'll return 0.
-    const member = memberTokenAmounts?.find(({holder}) => holder === address);
-
-    return {
-      address,
-      tokenAmount: member?.balance.displaiyValue || "0",
+    const getAllBalances = async () => {
+      try {
+        const amounts = await token.history.getAllHolderBalances();
+        setMemberTokenAmounts(amounts);
+        console.log("👜 Amounts", amounts);
+      } catch (error) {
+        console.error("failed to get member balances", error);
+      }
     }
-  });
-}, [memberAddresses, memberTokenAmounts]);
+
+
+
+    getAllBalances();
+  }, [hasClaimedNFT, token.history]);
+
+  // Now, we combine the memberAddresses and memberTokenAmounts into a single array
+  const memberList = useMemo(() => {
+    return memberAddresses.map((address) => {
+      // We're checking if we are finding the address in the memberTokenAmounts array
+      // If we are, we'll return the amount of token the member has.
+      // Otherwise, we'll return 0.
+      const member = memberTokenAmounts?.find(({ holder }) => holder === address);
+
+      return {
+        address,
+        tokenAmount: member?.balance.displayValue || "0",
+      }
+    });
+  }, [memberAddresses, memberTokenAmounts]);
 
   useEffect(() => {
     // If they don't have an connected wallet, exit!
@@ -134,44 +136,44 @@ const memberList = useMemo(() => {
     );
   }
 
-// If the user has already claimed their NFT we want to display the interal DAO page to them
-// only DAO members will see this. Render all the members + token amounts.
-if (hasClaimedNFT) {
-  return (
-    <div className="member-page">
-      <h1>🍪DAO Member Page</h1>
-      <p>Congratulations on being a member</p>
-      <div>
+  // If the user has already claimed their NFT we want to display the interal DAO page to them
+  // only DAO members will see this. Render all the members + token amounts.
+  if (hasClaimedNFT) {
+    return (
+      <div className="member-page">
+        <h1>DjezisaDAO Member Page</h1>
+        <p>Congratulations🍾🍾 on being a member</p>
         <div>
-          <h2>Member List</h2>
-          <table className="card">
-            <thead>
-              <tr>
-                <th>Address</th>
-                <th>Token Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {memberList.map((member) => {
-                return (
-                  <tr key={member.address}>
-                    <td>{shortenAddress(member.address)}</td>
-                    <td>{member.tokenAmount}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div>
+            <h2>Member List</h2>
+            <table className="card">
+              <thead>
+                <tr>
+                  <th>Address</th>
+                  <th>Token Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {memberList.map((member) => {
+                  return (
+                    <tr key={member.address}>
+                      <td>{shortenAddress(member.address)}</td>
+                      <td>{member.tokenAmount}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   // Render mint nft screen.
   return (
     <div className="mint-nft">
-      <h1>Mint your free 🍪DAO Membership NFT</h1>
+      <h1>Mint your free DjezisaDAO Membership NFT</h1>
       <button
         disabled={isClaiming}
         onClick={mintNft}
