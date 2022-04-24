@@ -1,11 +1,10 @@
-import { useAddress, useMetamask, useEditionDrop, useToken, useWalletConnect } from '@thirdweb-dev/react';
+import { useAddress, useMetamask, useEditionDrop, useToken } from '@thirdweb-dev/react';
 import { useState, useEffect, useMemo } from 'react';
 
 const App = () => {
   // Use the hooks thirdweb give us.
   const address = useAddress();
   const connectWithMetamask = useMetamask();
-  const connectWalletConnect = useWalletConnect();
   console.log("👋 Address:", address);
 
   // Initialize our editionDrop contract
@@ -130,11 +129,9 @@ const App = () => {
     return (
       <div className="landing">
         <h1>Welcome to DjezisaDAO</h1>
+
         <button onClick={connectWithMetamask} className="btn-hero">
           Connect with MetaMask
-        </button>
-        <button onClick={connectWalletConnect} className="btn-hero">
-          Connect with WalletConnect
         </button>
       </div>
     );

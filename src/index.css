@@ -124,7 +124,7 @@ button {
   color: #fbe6e5;
   border: none;
   font-weight: bold;
-  font-family: inherit;
+  font-family: 'Courier New', Courier, monospace;
   padding: 1.2rem 2rem;
   text-transform: uppercase;
   border-radius: 3rem;
