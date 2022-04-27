@@ -1,11 +1,15 @@
-import { useAddress, useMetamask, useEditionDrop, useToken, useVote } from '@thirdweb-dev/react';
+import { useAddress, useMetamask, useEditionDrop, useToken, useVote, useNetwork, useWalletConnect, useCoinbaseWallet } from '@thirdweb-dev/react';
 import { useState, useEffect, useMemo } from 'react';
 import { AddressZero } from "@ethersproject/constants";
+import { ChainId } from '@thirdweb-dev/sdk';
 
 const App = () => {
   // Use the hooks thirdweb give us.
   const address = useAddress();
+  const network = useNetwork();
   const connectWithMetamask = useMetamask();
+  const connectWithWalletConnect = useWalletConnect();
+  const connectWithCoinbaseWallet = useCoinbaseWallet();
   console.log("👋 Address:", address);
 
   // Initialize our editionDrop contract
@@ -29,56 +33,56 @@ const App = () => {
 
 
   const [proposals, setProposals] = useState([]);
-const [isVoting, setIsVoting] = useState(false);
-const [hasVoted, setHasVoted] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
 
-// Retrieve all our existing proposals from the contract.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  // A simple call to vote.getAll() to grab the proposals.
-  const getAllProposals = async () => {
-    try {
-      const proposals = await vote.getAll();
-      setProposals(proposals);
-    } catch (error) {
-      console.log("failed to get proposals", error);
+  // Retrieve all our existing proposals from the contract.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
     }
-  };
-  getAllProposals();
-}, [hasClaimedNFT, vote]);
 
-// We also need to check if the user already voted.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  // If we haven't finished retrieving the proposals from the useEffect above
-  // then we can't check if the user voted yet!
-  if (!proposals.length) {
-    return;
-  }
-
-  const checkIfUserHasVoted = async () => {
-    try {
-      const hasVoted = await vote.hasVoted(proposals[0].proposalId, address);
-      setHasVoted(hasVoted);
-      if (hasVoted) {
-        console.log("🥵 User has already voted");
-      } else {
-        console.log("🙂 User has not voted yet");
+    // A simple call to vote.getAll() to grab the proposals.
+    const getAllProposals = async () => {
+      try {
+        const proposals = await vote.getAll();
+        setProposals(proposals);
+      } catch (error) {
+        console.log("failed to get proposals", error);
       }
-    } catch (error) {
-      console.error("Failed to check if wallet has voted", error);
-    }
-  };
-  checkIfUserHasVoted();
+    };
+    getAllProposals();
+  }, [hasClaimedNFT, vote]);
 
-}, [hasClaimedNFT, proposals, address, vote]);
-  
+  // We also need to check if the user already voted.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
+    }
+
+    // If we haven't finished retrieving the proposals from the useEffect above
+    // then we can't check if the user voted yet!
+    if (!proposals.length) {
+      return;
+    }
+
+    const checkIfUserHasVoted = async () => {
+      try {
+        const hasVoted = await vote.hasVoted(proposals[0].proposalId, address);
+        setHasVoted(hasVoted);
+        if (hasVoted) {
+          console.log("🥵 User has already voted");
+        } else {
+          console.log("🙂 User has not voted yet");
+        }
+      } catch (error) {
+        console.error("Failed to check if wallet has voted", error);
+      }
+    };
+    checkIfUserHasVoted();
+
+  }, [hasClaimedNFT, proposals, address, vote]);
+
 
   // This useEffect grabs all the addresses of our members holding our NFT.
   useEffect(() => {
@@ -176,6 +180,15 @@ useEffect(() => {
     }
   };
 
+  if (address && (network?.[0].data.chain.id !== ChainId.Rinkeby)) {
+    return (
+      <div className="unsupported-network">
+        <h2>Please connect to Rinkeby</h2>
+        <p>This dapp only works on the Rinkeby network, please switch networks in your connected wallet.</p>
+      </div>
+    )
+  }
+
   // This is the case where the user hasn't connected their wallet
   // to your web app. Let them call connectWallet.
   if (!address) {
@@ -185,6 +198,13 @@ useEffect(() => {
 
         <button onClick={connectWithMetamask} className="btn-hero">
           Connect with MetaMask
+        </button>
+
+        <button onClick={connectWithWalletConnect}>
+          Connect with WalletConnect
+        </button>
+        <button onClick={connectWithCoinbaseWallet}>
+          Connect with Coinbase
         </button>
       </div>
     );
